@@ -3,17 +3,21 @@ from django.test import TestCase
 from rest_framework.test import APIRequestFactory
 from .views import NoteListCreate
 from rest_framework.test import APIClient
+from rest_framework.authtoken.models import Token
 from rest_framework.test import force_authenticate
 from django.contrib.auth.models import User
-from django.urls import reverse
+from django.urls import reverse,resolve,include,path
 from rest_framework import status
-from rest_framework.test import APITestCase
+from rest_framework.test import APITestCase,RequestsClient,URLPatternsTestCase
 from django.contrib.auth.models import User
 from .models import Note
 import json
 from django.test.client import encode_multipart, RequestFactory
 from .views import NoteListRetrive,NoteListCreate
 from django.contrib.auth.models import User
+from django.test import SimpleTestCase,Client
+from requests.auth import HTTPBasicAuth
+
 
 
 
@@ -21,56 +25,84 @@ from django.contrib.auth.models import User
 
 
 #basc
-class NoteTests(APITestCase):
-#     def test_fac(self):
-#         factory = APIRequestFactory()
-#         request = factory.post('/notes/', json.dumps({'title': 'new idea'}), content_type='application/json'   
-#     def test_put(self):
-#         factory = APIRequestFactory()
-#         request = factory.put('/notes/',{'title':'Mogli','content':'Jungle Jungle Baat Chali hai'})
-#         request = factory.patch('/notes/',{'title':'Mogli'})
 
-#     def test_patch(self):
-#         factory = APIRequestFactory()
-# #        request = factory.put('/notes/',{'title':'Mogli','content':'Jungle Jungle Baat Chali hai'})
-#         request = factory.patch('/notes/',{'title':'Mogli'})
+
+# #***********class base django test cases url*****************
+#class NoteTests(SimpleTestCase):
+#     def test_url_classbase(self):
+#         url = reverse('note-list-create')
+#         resolved_view = resolve(url).func
+#         self.assertEqual(resolved_view.view_class,NoteListCreate)
+
+#********method 2****************
+    #  def test_url_funcbase(self):
+    #      url =reverse('note-list-create')
+    #      self.assertEqual(resolve(url).func.view_class, NoteListCreate)
+
+
+# #**************function base django tests url***************
+#     def test_url_funcbase(self):
+#         url =resolve('note-list-create')
+#         self.assertDictEquals(resolve(url).func,NoteListCreate)
     
-    # def test_encode(self):
-    #     factory = RequestFactory()
-    #     data = {'title':'Mogli','content':'Jungle Jungle Baat Chali hai'}
-    #     content = encode_multipart('BoUnDaRyStRiNg',data)
-    #     content_type = 'multipart/form-data; boundary=BoUnDaRyStRiNg'
-    #     request =factory.put('/notes/547/', content, content_type=content_type)
-    def setUp(self):
-        # Create a user with the desired username
-        self.user = User.objects.create_user(username='testuser', password='testpassword')
-
-    def test_force_auth(self):
-        factory = APIRequestFactory()
-        view = NoteListRetrive.as_view()
-
-        # Make an authenticated request to the view...
-        request = factory.get(reverse('note-list-create'))
-        force_authenticate(request, user=self.user)
-        response = view(request)
-
-        # Perform assertions on the response here
-        self.assertEqual(response.status_code, 200)
+#******************Pk url TEST CASES*****************************
+    # def test_url_pk(self):
+    #     #for another arguments in url field
+    #      #url = reverse('note-list-retrieve', kwargs={'slug': 'example-slug', 'pk': 1, 'name': 'example-name'})
+    #     url = reverse('note-list-retrive',kwargs={'pk':1})
+    #     self.assertEqual(resolve(url).func.view_class,NoteListRetrive)
+ 
+#**********************End Url Test cases **********************
+    
+#*********************************************************************
+    #*******************Started View Test Cases**********************#
+#*********************************************************************
+# class NoteTests(TestCase):
+    # def test_creteview(self):
+    #     client =Client()
+    #     response = client.get(reverse('note-list-create'))
+    #     self.assertEqual(response.status_code,status.HTTP_200_OK)
+    #     #self.assertTemplateUsed(response,'api/create.html')
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#************************Rest Api TEST CASES ********************
+
+#***********************************Final Api work view based********************************
 
     
-#     def test_create_note(self):
-#         data = {
-#             'title':'Junglebook',
-#             'content':'Jungle Jungle Baat Chali hai'
-#         }
-#         _response = self.client.post(reverse('note-list-create'),data=data,format='json')
-#         create_data = _response.json()
-#         self.assertEqual(_response.status_code,status.HTTP_201_CREATED)
-#         print(create_data)
+    # def test_create_note(self):
+    #     data = {
+    #         'title':'Junglebook',
+    #         'content':'Jungle Jungle Baat Chali hai'
+    #     }
+    #     _response = self.client.post(reverse('note-list-create'),data=data,format='json')
+    #     create_data = _response.json()
+    #     self.assertEqual(_response.status_code,status.HTTP_201_CREATED)
+    #     print(create_data)
 
 #     def test_get_note(self):
 #         data = {
@@ -172,10 +204,241 @@ class NoteTests(APITestCase):
 
     
 
+#********************************Django Rest api website **************************
+
+
+class NoteTests(APITestCase):
+
+#     def test_fac(self):
+#         factory = APIRequestFactory()
+#         request = factory.post('/notes/', json.dumps({'title': 'new idea'}), content_type='application/json'   
+    
+    
+#     def test_put(self):
+#         factory = APIRequestFactory()
+#         request = factory.put('/notes/',{'title':'Mogli','content':'Jungle Jungle Baat Chali hai'})
+#         request = factory.patch('/notes/',{'title':'Mogli'})
+
+#     def test_patch(self):
+#         factory = APIRequestFactory()
+# #        request = factory.put('/notes/',{'title':'Mogli','content':'Jungle Jungle Baat Chali hai'})
+#         request = factory.patch('/notes/',{'title':'Mogli'})
+    
+    # def test_encode(self):
+    #     factory = RequestFactory()
+    #     data = {'title':'Mogli','content':'Jungle Jungle Baat Chali hai'}
+    #     content = encode_multipart('BoUnDaRyStRiNg',data)
+    #     content_type = 'multipart/form-data; boundary=BoUnDaRyStRiNg'
+    #     request =factory.put('/notes/547/', content, content_type=content_type)
+    # def setUp(self):
+    #     # Create a user with the desired username
+    # #     self.user = User.objects.create_user(username='testuser', password='testpassword')
+    # def setUp(self):
+    #     # Create a user for testing
+    #     self.user = User.objects.create_user(username='Ashish', password='password123')
+
+    # def test_force_auth(self):
+    #     factory = APIRequestFactory()
+    #     user = User.objects.get(username ="Ashish")
+    #     view = NoteListCreate.as_view()
+
+    #     # Make an authenticated request to the view...
+    #     request = factory.get(reverse('note-list-create'))
+    #     force_authenticate(request, user=user)
+    #     response = view(request)
+    #     print(response)
+
+    #     # Perform assertions on the response here
+    #     self.assertEqual(response.status_code, 200)
+
+    # def test_login(self):
+    #     client =Client()
+    #     client.login(username="Ashish",password="maa1997@")
+
+    # def test_loout(self):
+    #     client = Client()
+    #     client.logout()
+     
+    #  def setUp(self):
+    #     # Create a user for the test
+    #     self.user = User.objects.create_user(username='Ashish', password='password123')
+
+    #     # Create a token for the user
+    #     self.token = Token.objects.create(user=self.user)
+    #  def test_auth(self):
+    #       token = Token.objects.get(user__username="Ashish")
+    #       client = APIClient(enforce_csrf_checks=True)
+    #       client.credentials(HTTP_AUTHORIZATION = 'Token' + token.key)
+    #       client.credentials()
+    #   def setUp(self):
+    # #     # Create a user for the test
+    #        self.user = User.objects.create_user(username='Ashish', password='password123')
+    #        self.token = Token.objects.create(user=self.user)
+
+
+
+
+    #   def test_request_client(self):
+    #         client = RequestsClient()
+    #         # Assuming you want to create a new note
+    #         response = client.post('http://api/notes/', data={'title': 'New Note', 'content': 'Some content'})
+    #         assert response.status_code,status.HTTP_201_CREATED
+
+
+
+    #   def test_resquestclient(self):
+    #         client = RequestsClient()
+    #         response = client.get('http://api/notes/')
+    #         assert response.status_code,status.HTTP_200_OK
+
+#**************error********************
+
+    #   def test_auth_basic(self):
+    #         client = Client()
+    #         client.auth = HTTPBasicAuth('user', 'pass')
+    #         client.headers.update({'x-test': 'true'})
+
+    #   def test_auth_basic(self):
+    #     client = Client()
+    #     # Set HTTP basic authentication credentials
+    #     client.defaults['HTTP_AUTHORIZATION'] = 'Basic ' + HTTPBasicAuth('user', 'pass').username_password()
+    #     # Set additional headers using defaults
+    #     client.defaults['HTTP_X_TEST'] = 'true'
+
+    #     # Now perform your test using the client
+
+    #************error End*****************
+    # def test_csrf_validate(self):
+    #     client = Client(enforce_csrf_checks=True)
+
+    #     # Obtain a CSRF token.
+    #     response = client.get('http://api/notes/')
+    #     assert response.status_code,status.HTTP_200_OK
+    #     csrftoken = response.cookies['csrftoken'].value
+
+    #     # Interact with the API.
+    #     response = client.post('http://api/notes/', json={
+    #         'name': 'MegaCorp',
+    #         'status': 'active'
+    #     }, headers={'X-CSRFToken': csrftoken})
+    # #     assert response.status_code,status.HTTP_201_CREATED
+
+    #    def test_create_account(self):
+    #           create_data={
+    #                  'title':'Junglebook',
+    #                  'content':'Jungle Jungle Baat chali hai',
+    #           }
+    #           url = reverse('note-list-create')
+    #           response =self.client.post(url,data=create_data,format='json')
+    #           self.assertEqual(response.status_code,status.HTTP_201_CREATED)
+    #           self.assertEqual(Note.objects.count(),1)
+    #           self.assertEqual(Note.objects.get().title,'Junglebook')
+    #           self.assertEqual(Note.objects.get().content,'Jungle Jungle Baat chali hai')
+    #           created_data = response.json()
+    #           print(created_data)
+        # def test_url_case(self):
+        #     urlpatterns = [
+        #              path('notes/', NoteListCreate.as_view(), name='note-list-create'),
+        #            # path('notesrud/<int:pk>/',NoteListRetrive.as_view(), name='note-list-retrive'),
+        #                           ]
+
+        #     url =reverse('note-list-create')
+        #     response= self.client.get(url,formal='json')
+        #     self.assertEqual(response.status_code,status.HTTP_200_OK)
+        #     self.assertEqual(len(response.data),1)
+        # def setUp(self):
+        # # Ensure the test data is created before running the tests
+        #     Note.objects.create(title='Test Note', content='Test Content')
+            
+        # def test_url_case(self):
+        #     url = reverse('note-list-create')
+        #     response = self.client.get(url, format='json')
+        #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+        #     self.assertEqual(len(response.data), 1)
+    
+
+    
+    #*********************Model Based test *************************************
+    def setUp(self):
+        self.note = Note.objects.create(title='Maa kasam', content='Badla Lunga')
+    
+
+
+    def test_note_creation(self):
+        response =Note.objects.create(title="Maa kasam",content="Badla Lunga")
+        self.assertEqual(response.title,"Maa kasam")
+        self.assertEqual(response.content,"Badla Lunga")
+        self.assertTrue(isinstance(response,Note))
+        self.assertTrue(response.__str__(),response.title)
+        self.assertTrue(response.__str__(),response.content)
+        print(response.title)
+        print(response.content)
+
+
+    def test_note_get(self):
+        _response = Note.objects.get(id=self.note.id)
+        self.assertEqual(_response.title,'Maa kasam')
+        self.assertEqual(_response.content,'Badla Lunga')
+        self.assertTrue(_response.__str__(),_response.title)
+        self.assertTrue(_response.__str__(),_response.content)
+        print(_response.title)
+        print(_response.content)
+
+    def test_note2_get(self):
+        note = Note.objects.get(id=self.note.id)
+        self.assertEqual(note.title,"Maa kasam")
+        self.assertEqual(note.content,'Badla Lunga')
+        print(note.title)
+        print(note.content)
+
+    def test_note_update(self):
+        self.note.title = 'Maa kasam'
+        self.note.content = 'Badla Lunga'
+        self.note.save()
+        updated_note = Note.objects.get(id=self.note.id)
+        self.assertEqual(updated_note.title, 'Maa kasam')
+        self.assertEqual(updated_note.content, 'Badla Lunga')
+
+    def test_note_deletion(self):
+        note_id = self.note.id
+        self.note.delete()
+        with self.assertRaises(Note.DoesNotExist):
+            Note.objects.get(id=note_id)
+
+    # def test_str_method(self):
+    #     self.assertEqual(str(self.note), 'Maa kasam')
+
+    
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
     
+    #********************Chat Gpt Suggestions **************************
         
     # def test_create_note(self):
     #     """
